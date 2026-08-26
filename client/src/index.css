@@ -1,13 +1,15 @@
+/**
+ * Kernel Field Notes style: technical editorialism, blue-black ink surfaces,
+ * calibration geometry, IBM Plex Mono diagnostics, and Signal Lime (#C6FF4A).
+ */
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: "Space Grotesk", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -27,151 +29,98 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.4 0.015 65);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.141 0.005 285.823);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
-}
-
-.dark {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-500);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.85 0.005 65);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.85 0.005 65);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.85 0.005 65);
-  --secondary: oklch(0.24 0.006 286.033);
-  --secondary-foreground: oklch(0.7 0.005 65);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground:  oklch(0.92 0.005 65);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.488 0.243 264.376);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.85 0.005 65);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground:  oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.488 0.243 264.376);
+  --radius: 0.75rem;
+  --background: #0b1114;
+  --foreground: #e7eeea;
+  --card: #10191d;
+  --card-foreground: #e7eeea;
+  --popover: #10191d;
+  --popover-foreground: #e7eeea;
+  --primary: #c6ff4a;
+  --primary-foreground: #0b1114;
+  --secondary: #182428;
+  --secondary-foreground: #d8e0dc;
+  --muted: #132025;
+  --muted-foreground: #84928e;
+  --accent: #182428;
+  --accent-foreground: #edf4ed;
+  --destructive: #ff776f;
+  --destructive-foreground: #221011;
+  --border: rgba(198, 218, 210, 0.12);
+  --input: rgba(198, 218, 210, 0.16);
+  --ring: #c6ff4a;
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
+  * { @apply border-border; }
+  html { background: var(--background); }
   body {
-    @apply bg-background text-foreground;
+    min-width: 320px;
+    background:
+      radial-gradient(circle at 74% -12%, rgba(91, 118, 104, 0.18), transparent 30rem),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px),
+      var(--background);
+    background-size: auto, 28px 28px, auto;
+    color: var(--foreground);
+    font-family: "Space Grotesk", sans-serif;
   }
-  button:not(:disabled),
-  [role="button"]:not([aria-disabled="true"]),
-  [type="button"]:not(:disabled),
-  [type="submit"]:not(:disabled),
-  [type="reset"]:not(:disabled),
-  a[href],
-  select:not(:disabled),
-  input[type="checkbox"]:not(:disabled),
-  input[type="radio"]:not(:disabled) {
-    @apply cursor-pointer;
-  }
+  button, input { font: inherit; }
+  button:not(:disabled) { cursor: pointer; }
+  ::selection { background: rgba(198, 255, 74, 0.28); color: white; }
 }
 
 @layer components {
-  /**
-   * Custom container utility that centers content and adds responsive padding.
-   *
-   * This overrides Tailwind's default container behavior to:
-   * - Auto-center content (mx-auto)
-   * - Add responsive horizontal padding
-   * - Set max-width for large screens
-   *
-   * Usage: <div className="container">...</div>
-   *
-   * For custom widths, use max-w-* utilities directly:
-   * <div className="max-w-6xl mx-auto px-4">...</div>
-   */
-  .container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem; /* 16px - mobile padding */
-    padding-right: 1rem;
+  .mono { font-family: "IBM Plex Mono", monospace; }
+  .instrument-panel {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(205, 224, 214, 0.13);
+    background: linear-gradient(145deg, rgba(23, 35, 40, 0.92), rgba(13, 22, 26, 0.93));
+    box-shadow: 0 18px 38px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.025);
   }
-
-  .flex {
-    min-height: 0;
-    min-width: 0;
+  .instrument-panel::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    opacity: 0.28;
+    background-image: linear-gradient(rgba(206, 226, 216, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(206, 226, 216, 0.025) 1px, transparent 1px);
+    background-size: 16px 16px;
+    mask-image: linear-gradient(to bottom, black, transparent 90%);
   }
-
-  @media (min-width: 640px) {
-    .container {
-      padding-left: 1.5rem; /* 24px - tablet padding */
-      padding-right: 1.5rem;
-    }
+  .panel-content { position: relative; z-index: 1; }
+  .observation-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    color: #9fada8;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.63rem;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    line-height: 1;
+    text-transform: uppercase;
   }
-
-  @media (min-width: 1024px) {
-    .container {
-      padding-left: 2rem; /* 32px - desktop padding */
-      padding-right: 2rem;
-      max-width: 1280px; /* Standard content width */
-    }
-  }
+  .observation-tag::before { content: ""; width: 0.45rem; height: 0.45rem; border: 1px solid currentColor; }
+  .tickline { height: 1px; flex: 1; min-width: 14px; background: repeating-linear-gradient(to right, rgba(184, 203, 193, 0.30) 0 1px, transparent 1px 5px); }
+  .subtle-rule { border-top: 1px solid rgba(205, 224, 214, 0.10); }
+  .nav-item { transition: background-color 160ms cubic-bezier(0.23, 1, 0.32, 1), color 160ms cubic-bezier(0.23, 1, 0.32, 1), transform 160ms cubic-bezier(0.23, 1, 0.32, 1); }
+  .nav-item:hover { background: rgba(255,255,255,0.045); color: #f5fbf5; transform: translateX(2px); }
+  .nav-item.active { background: linear-gradient(90deg, rgba(198,255,74,.13), rgba(198,255,74,0.025)); color: #eaffbc; box-shadow: inset 2px 0 #c6ff4a; }
+  .control-button { transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms cubic-bezier(0.23, 1, 0.32, 1), border-color 150ms cubic-bezier(0.23, 1, 0.32, 1); }
+  .control-button:hover { border-color: rgba(198,255,74,0.55); background-color: rgba(198,255,74,0.09); }
+  .control-button:active { transform: scale(.97); }
+  .data-row { transition: background-color 160ms cubic-bezier(0.23, 1, 0.32, 1); }
+  .data-row:hover { background-color: rgba(255,255,255,0.035); }
+  .status-live { animation: livePulse 2s ease-in-out infinite; }
+  .signal-cursor { animation: cursorGlow 2.4s ease-in-out infinite; }
+  @keyframes livePulse { 50% { box-shadow: 0 0 0 5px rgba(198,255,74,0.04); opacity: .55; } }
+  @keyframes cursorGlow { 50% { opacity: .55; } }
+  @media (prefers-reduced-motion: reduce) { .status-live, .signal-cursor { animation: none; } .nav-item, .control-button, .data-row { transition: none; } }
 }
