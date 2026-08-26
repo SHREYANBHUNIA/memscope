@@ -140,7 +140,7 @@
     gap: .44rem;
     color: #fff;
     font-family: "IBM Plex Mono", monospace;
-    font-size: .78rem;
+    font-size: .88rem;
     font-weight: 600;
     letter-spacing: .15em;
     line-height: 1;
@@ -148,17 +148,17 @@
   .brand-wordmark .memory-m {
     position: relative;
     display: inline-grid;
-    grid-template-columns: repeat(3, 3px);
+    grid-template-columns: repeat(3, 4px);
     gap: 2px;
-    width: 13px;
-    height: 12px;
+    width: 16px;
+    height: 14px;
     padding-top: 2px;
   }
-  .brand-wordmark .memory-m i { display: block; height: 3px; background: currentColor; }
+  .brand-wordmark .memory-m i { display: block; height: 4px; background: currentColor; }
   .brand-wordmark .memory-m i:nth-child(1) { grid-column: 1 / 2; grid-row: 1 / 4; }
   .brand-wordmark .memory-m i:nth-child(2) { grid-column: 2 / 3; grid-row: 2 / 4; }
   .brand-wordmark .memory-m i:nth-child(3) { grid-column: 3 / 4; grid-row: 1 / 4; }
-  .brand-wordmark .memory-m::after { content: ""; position: absolute; top: 0; left: 3px; width: 7px; height: 3px; border-top: 1px solid currentColor; }
+  .brand-wordmark .memory-m::after { content: ""; position: absolute; top: 0; left: 4px; width: 8px; height: 3px; border-top: 1px solid currentColor; }
   .case-evidence-thread { position: relative; }
   .case-evidence-thread::before { content: ""; position: absolute; left: 20px; top: 16px; bottom: 16px; border-left: 1px dashed rgba(255,255,255,.2); pointer-events: none; }
   .primary-evidence-ring { border-color: #fff !important; background-color: rgba(255,255,255,.12) !important; box-shadow: 0 0 0 1px rgba(255,255,255,.26), 0 0 0 5px rgba(255,255,255,.035); }
@@ -198,4 +198,31 @@
   .monochrome-case .evidence-beacon { filter: grayscale(1) brightness(2.2); }
   .monochrome-case .primary-evidence-ring { color: #fff !important; border-color: #fff !important; background-color: rgba(255,255,255,.10) !important; }
   .monochrome-case .instrument-panel::before { border-color: rgba(255,255,255,.42); }
+
+  /* White-Paper Cursive: colors are inverted from the forensic casework base so
+     all existing dark diagnostic surfaces become a clean paper dossier. */
+  .paper-case {
+    color-scheme: light;
+    background: #000 !important;
+    filter: invert(1) grayscale(1);
+  }
+  .paper-case .instrument-panel {
+    border-color: rgba(0,0,0,.25);
+    background: linear-gradient(145deg, #131313 0%, #070707 100%);
+    box-shadow: 0 14px 30px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .paper-case .instrument-panel::after { opacity: .42; }
+  .paper-case .instrument-panel::before { border-color: rgba(255,255,255,.55); }
+  .paper-case .script-heading {
+    font-family: "Allura", cursive;
+    font-weight: 400;
+    letter-spacing: .005em;
+    line-height: .94;
+  }
+  .paper-case h1 { font-family: "Allura", cursive; font-weight: 400; letter-spacing: .015em; line-height: .94; font-size: clamp(3.15rem, 4.6vw, 4.65rem); }
+  .paper-case h1 span { white-space: nowrap; }
+  .paper-case .dossier-emphasis { border-bottom: 1px solid currentColor; padding-bottom: .035em; }
+  .paper-case h2.script-heading { font-size: 2.1rem; }
+  .paper-case .evidence-item.active { box-shadow: inset 3px 0 0 currentColor; }
+  .paper-case .control-button:hover { background-color: rgba(255,255,255,.18); }
 }
