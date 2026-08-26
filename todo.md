@@ -52,3 +52,11 @@
 - [x] Persist case history locally and surface the storage location in the interface.
 - [x] Verify case changes survive a refresh and update the active investigation.
 - [ ] Save and deliver the persistent case-history checkpoint.
+
+## Searchable History and Case Attachments Revision
+
+- [x] Define case search, sorting, and per-case mock attachment workflows.
+- [x] Implement searchable and sortable case history controls.
+- [x] Implement per-case mock snapshot/log creation, viewing, and removal.
+- [x] Verify filtering, ordering, and attachment isolation across cases.
+- [ ] Save and deliver the searchable history and attachments checkpoint.

@@ -96,3 +96,7 @@ Resolution criteria are independent checkable assertions, not static decoration.
 ### Persistent case registry
 
 Cases are prototype records stored in the user’s own browser via `localStorage`, never uploaded to a server. The Case History rail is a true working registry: it lets an investigator create, select, test, and delete cases; each case carries its own criteria, local test-plan state, and analyst notes. The storage key is stated in the interface so the temporary, browser-local nature of this prototype is unambiguous.
+
+### Searchable history and case evidence attachments
+
+Case History supports a forensic retrieval workflow: query by case ID, title, process, PID, or host, then order cases by newest, oldest, title, or PID. Attachments are mock evidence records scoped to an individual case and stored within the same browser-local registry. Each mock file has a name, type, timestamp, and readable content; it can be opened in a dossier viewer or removed without affecting other cases.
