@@ -70,3 +70,9 @@ The mark is a cropped memory-map bracket containing three stacked trace segments
 ### Signature Brand Color
 
 **Signal Lime — `#C6FF4A`**. It is reserved for active scope, live telemetry, and positive analytical focus.
+
+## Style Decisions
+
+### Leak Detective revision
+
+The active dashboard direction is now **Leak Detective**. The workbench becomes a digital case file: the primary hierarchy is hypothesis, confidence, evidence, and the next falsifiable test. The chart is no longer the destination; it is a piece of evidence connected to timed observations. Soft dossier panels, numbered evidence markers, a compact investigation timeline, and a visible case status turn the telemetry into a disciplined debugging narrative. The existing graphite, lime, amber, and coral instrumentation palette remains, but coral is reserved for the suspected retained allocation path and confidence risk.

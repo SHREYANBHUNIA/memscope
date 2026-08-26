@@ -1,6 +1,6 @@
 /**
- * Kernel Field Notes style: technical editorialism, blue-black ink surfaces,
- * calibration geometry, IBM Plex Mono diagnostics, and Signal Lime (#C6FF4A).
+ * Leak Detective style: a restrained digital case file with dossier panels,
+ * evidence threads, numbered markers, and high-contrast investigation states.
  */
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -63,10 +63,11 @@
   body {
     min-width: 320px;
     background:
-      radial-gradient(circle at 74% -12%, rgba(91, 118, 104, 0.18), transparent 30rem),
+      radial-gradient(circle at 82% -8%, rgba(112, 89, 61, .11), transparent 32rem),
+      radial-gradient(circle at 17% 22%, rgba(84, 119, 95, .10), transparent 26rem),
       linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px),
       var(--background);
-    background-size: auto, 28px 28px, auto;
+    background-size: auto, auto, 28px 28px, auto;
     color: var(--foreground);
     font-family: "Space Grotesk", sans-serif;
   }
@@ -116,11 +117,12 @@
   .control-button { transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms cubic-bezier(0.23, 1, 0.32, 1), border-color 150ms cubic-bezier(0.23, 1, 0.32, 1); }
   .control-button:hover { border-color: rgba(198,255,74,0.55); background-color: rgba(198,255,74,0.09); }
   .control-button:active { transform: scale(.97); }
-  .data-row { transition: background-color 160ms cubic-bezier(0.23, 1, 0.32, 1); }
-  .data-row:hover { background-color: rgba(255,255,255,0.035); }
+  .evidence-item { transition: transform 170ms cubic-bezier(0.23, 1, 0.32, 1), border-color 170ms cubic-bezier(0.23, 1, 0.32, 1), background-color 170ms cubic-bezier(0.23, 1, 0.32, 1); }
+  .evidence-item:hover { transform: translateX(2px); border-color: rgba(198,255,74,.36); background-color: rgba(198,255,74,.04); }
+  .evidence-item.active { border-color: rgba(198,255,74,.55); background: linear-gradient(90deg, rgba(198,255,74,.11), rgba(198,255,74,.025)); }
   .status-live { animation: livePulse 2s ease-in-out infinite; }
-  .signal-cursor { animation: cursorGlow 2.4s ease-in-out infinite; }
+  .evidence-beacon { animation: beaconPulse 2.1s ease-in-out infinite; }
   @keyframes livePulse { 50% { box-shadow: 0 0 0 5px rgba(198,255,74,0.04); opacity: .55; } }
-  @keyframes cursorGlow { 50% { opacity: .55; } }
-  @media (prefers-reduced-motion: reduce) { .status-live, .signal-cursor { animation: none; } .nav-item, .control-button, .data-row { transition: none; } }
+  @keyframes beaconPulse { 50% { filter: drop-shadow(0 0 6px rgba(255,119,111,.65)); } }
+  @media (prefers-reduced-motion: reduce) { .status-live, .evidence-beacon { animation: none; } .nav-item, .control-button, .evidence-item { transition: none; } }
 }
