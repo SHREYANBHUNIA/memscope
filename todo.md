@@ -36,3 +36,11 @@
 - [x] Implement process registration, selection, and removal controls.
 - [x] Verify all criteria and process actions update the active case visibly.
 - [ ] Save and deliver the process-management checkpoint.
+
+## Expanded Case Actions Revision
+
+- [x] Define the expanded case-action menu and direct stack-sampling behavior.
+- [x] Implement additional case actions with visible local outcomes.
+- [x] Make each stack-sampling control open results directly without delegation.
+- [x] Verify the new menu and all stack-sampling entry points.
+- [ ] Save and deliver the expanded actions checkpoint.
