@@ -60,3 +60,9 @@
 - [x] Implement per-case mock snapshot/log creation, viewing, and removal.
 - [x] Verify filtering, ordering, and attachment isolation across cases.
 - [ ] Save and deliver the searchable history and attachments checkpoint.
+
+## GitHub Upload and Deployment Revision
+
+- [x] Confirm the target GitHub account and repository destination: SHREYANBHUNIA/memscope (private).
+- [ ] Create or prepare a deployment-ready repository and push the project source.
+- [ ] Verify the remote repository and document the deployment handoff.
