@@ -28,3 +28,11 @@
 - [x] Implement sampled-stack display and analyst note creation.
 - [x] Verify every previously placeholder control has a visible functional outcome.
 - [ ] Save and deliver the functional controls checkpoint.
+
+## Resolution and Process Management Revision
+
+- [x] Define independent resolution checks and the local process registry workflow.
+- [x] Implement independently toggled resolution criteria.
+- [x] Implement process registration, selection, and removal controls.
+- [x] Verify all criteria and process actions update the active case visibly.
+- [ ] Save and deliver the process-management checkpoint.

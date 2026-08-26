@@ -88,3 +88,7 @@ The custom MemScope wordmark uses a linked three-block `M` construction to echo 
 The active visual language is now **White-Paper Cursive**. The case file reads as an annotated printed dossier: an off-white field, fine black panels, editorial cursive for the principal case assertion and evidence titles, and technical monospace for sources, metrics, timestamps, and controls. The cursive display face is reserved for a small number of narrative moments so investigation data remains rapid to scan. Black linework, hairline rules, and measured spacing keep the look precise rather than decorative.
 
 The cursive must read as clear editorial handwriting rather than a signature texture; it is reserved for the principal assertion and never used for operational data. The enlarged linked-block `M` is a fixed element of the MemScope wordmark. Solid primary evidence markers, white-space inversion, repeated calibration brackets, and lighter filed-away secondary traces distinguish priority without relying on color.
+
+### Functional investigation controls
+
+Resolution criteria are independent checkable assertions, not static decoration. A case automatically advances from open to testing to resolved based on the checks that the investigator confirms. The local process registry treats each manually registered PID as a selectable mock collection target. Adding, selecting, or removing a target must visibly change the active case scope while preserving the existing synthetic evidence workspace.
