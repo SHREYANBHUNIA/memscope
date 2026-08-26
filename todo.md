@@ -70,5 +70,5 @@
 ## Git Author Attribution Revision
 
 - [x] Confirm the current authored commit scope on the GitHub branch: all 12 published commits.
-- [ ] Rewrite the project commit attribution with the provided author identity.
-- [ ] Verify the replacement author appears on the GitHub repository history.
+- [x] Rewrite the project commit attribution with the provided author identity.
+- [x] Verify the replacement author appears on the GitHub repository history.
