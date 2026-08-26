@@ -44,3 +44,11 @@
 - [x] Make each stack-sampling control open results directly without delegation.
 - [x] Verify the new menu and all stack-sampling entry points.
 - [ ] Save and deliver the expanded actions checkpoint.
+
+## Persistent Case History Revision
+
+- [x] Define the browser-local case registry and explicit storage disclosure.
+- [x] Implement new-case creation, case selection, and deletion safeguards.
+- [x] Persist case history locally and surface the storage location in the interface.
+- [x] Verify case changes survive a refresh and update the active investigation.
+- [ ] Save and deliver the persistent case-history checkpoint.

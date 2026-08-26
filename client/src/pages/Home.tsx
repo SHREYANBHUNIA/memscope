@@ -2,7 +2,7 @@
  * White-Paper Cursive style: a light forensic dossier with fine black linework,
  * a thin script case narrative, and monospace diagnostics for precise evidence.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { area, curveMonotoneX, line, scaleLinear } from "d3";
 import {
   Activity, AlertTriangle, ArrowRight, Check, ChevronRight, Clock3, Code2, Copy,
@@ -17,6 +17,13 @@ type Evidence = {
 };
 
 type ProcessTarget = { pid: string; name: string; host: string; memory: string };
+type CaseTest = { id: string; task: string; expected: string; done: boolean };
+type InvestigationCase = {
+  id: string; title: string; processName: string; pid: string; host: string; createdAt: string;
+  notes: string[]; testPlan: CaseTest[]; resolutionChecks: { isolation: boolean; slope: boolean; reclaim: boolean };
+};
+
+const CASE_STORAGE_KEY = "memscope.case-registry.v1";
 
 const telemetry = [
   { t: "14:00", rss: 338, heap: 172, req: 48 }, { t: "14:05", rss: 346, heap: 179, req: 51 },
@@ -46,6 +53,11 @@ const initialProcesses: ProcessTarget[] = [
   { pid: "18509", name: "nginx", host: "devbox-07", memory: "88 MiB" },
 ];
 
+const defaultCase: InvestigationCase = {
+  id: "M-0428", title: "Request-context retention", processName: "api-worker", pid: "18422", host: "devbox-07",
+  createdAt: "2026-08-26T14:00:02.000Z", notes: [], testPlan: [], resolutionChecks: { isolation: false, slope: false, reclaim: false },
+};
+
 function SectionLabel({ children, right }: { children: string; right?: React.ReactNode }) {
   return <div className="flex items-center gap-3"><span className="observation-tag">{children}</span><span className="tickline" />{right}</div>;
 }
@@ -72,12 +84,20 @@ function EvidenceChart({ active, onSelect }: { active: Evidence; onSelect: (item
 export default function Home() {
   const [activeEvidence, setActiveEvidence] = useState(evidence[2]);
   const [evidenceFilter, setEvidenceFilter] = useState<"all" | Evidence["kind"]>("all");
+  const [caseHistory, setCaseHistory] = useState<InvestigationCase[]>(() => {
+    try { const stored = window.localStorage.getItem(CASE_STORAGE_KEY); return stored ? JSON.parse(stored) : [defaultCase]; } catch { return [defaultCase]; }
+  });
+  const [activeCaseId, setActiveCaseId] = useState(() => {
+    try { return window.localStorage.getItem("memscope.active-case.v1") || defaultCase.id; } catch { return defaultCase.id; }
+  });
+  const [showCaseRegistry, setShowCaseRegistry] = useState(false);
+  const [caseDraft, setCaseDraft] = useState({ title: "", processName: "", pid: "", host: "devbox-07" });
   const [resolutionChecks, setResolutionChecks] = useState({ isolation: false, slope: false, reclaim: false });
   const [processes, setProcesses] = useState<ProcessTarget[]>(initialProcesses);
   const [activeProcessPid, setActiveProcessPid] = useState(initialProcesses[0].pid);
   const [showProcessRegistry, setShowProcessRegistry] = useState(false);
   const [processDraft, setProcessDraft] = useState({ name: "", pid: "", host: "devbox-07" });
-  const [testPlan, setTestPlan] = useState<Array<{ id: string; task: string; expected: string; done: boolean }>>([]);
+  const [testPlan, setTestPlan] = useState<CaseTest[]>([]);
   const [showStacks, setShowStacks] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const [caseActivity, setCaseActivity] = useState("Case opened from synthetic collection window.");
@@ -85,12 +105,16 @@ export default function Home() {
   const [noteDraft, setNoteDraft] = useState("");
   const [notes, setNotes] = useState<string[]>([]);
   const filteredEvidence = evidenceFilter === "all" ? evidence : evidence.filter(item => item.kind === evidenceFilter);
+  const activeCase = caseHistory.find(item => item.id === activeCaseId) ?? caseHistory[0] ?? defaultCase;
   const activeProcess = processes.find(process => process.pid === activeProcessPid) ?? processes[0];
   const completedCriteria = Object.values(resolutionChecks).filter(Boolean).length;
   const caseStatus = completedCriteria === 3 ? "resolved" : completedCriteria > 0 ? "testing" : "open";
   const caseProgress = caseStatus === "open" ? 71 : caseStatus === "testing" ? 86 : 100;
   const statusLabel = caseStatus === "open" ? "Open / corroborated" : caseStatus === "testing" ? "Test in progress" : "Resolved / verification";
   const statusTone = caseStatus === "resolved" ? "text-[#dfffa7] border-[#c6ff4a]/30 bg-[#c6ff4a]/[.08]" : caseStatus === "testing" ? "text-[#ffd593] border-[#f5b65e]/30 bg-[#f5b65e]/[.07]" : "text-[#ffafa9] border-[#ff776f]/30 bg-[#ff776f]/[.07]";
+
+  useEffect(() => { window.localStorage.setItem(CASE_STORAGE_KEY, JSON.stringify(caseHistory)); }, [caseHistory]);
+  useEffect(() => { window.localStorage.setItem("memscope.active-case.v1", activeCaseId); }, [activeCaseId]);
 
   const beginTest = () => { setResolutionChecks(current => ({ ...current, isolation: true })); setTestPlan(current => current.length ? current : [{ id: "T-01", task: "Disable request_ctx reuse path", expected: "RSS slope falls below 0.4 MiB/min within 10 minutes.", done: false }]); toast.success("Isolation test added to the active case plan."); };
   const resolveCase = () => { setResolutionChecks({ isolation: true, slope: true, reclaim: true }); toast.success("All resolution criteria marked as verified."); };
@@ -107,6 +131,24 @@ export default function Home() {
     if (processes.length === 1) { toast.error("Keep at least one process registered for this case."); return; }
     const next = processes.filter(process => process.pid !== pid); setProcesses(next); if (activeProcessPid === pid) setActiveProcessPid(next[0].pid); toast.success("Process removed from the active case.");
   };
+  const selectCase = (caseId: string) => {
+    const item = caseHistory.find(entry => entry.id === caseId); if (!item) return;
+    setActiveCaseId(item.id); setResolutionChecks(item.resolutionChecks); setTestPlan(item.testPlan); setNotes(item.notes); setCaseActivity(`Opened case ${item.id}: ${item.title}.`);
+    const target = { pid: item.pid, name: item.processName, host: item.host, memory: "collecting…" };
+    setProcesses(current => current.some(process => process.pid === item.pid) ? current : [...current, target]); setActiveProcessPid(item.pid); setShowCaseRegistry(false);
+  };
+  const createCase = () => {
+    const title = caseDraft.title.trim(); const processName = caseDraft.processName.trim(); const pid = caseDraft.pid.trim();
+    if (!title || !processName || !pid) { toast.error("Enter a case title, process name, and PID."); return; }
+    const id = `M-${String(Date.now()).slice(-6)}`;
+    const item: InvestigationCase = { id, title, processName, pid, host: caseDraft.host.trim() || "devbox-07", createdAt: new Date().toISOString(), notes: [], testPlan: [], resolutionChecks: { isolation: false, slope: false, reclaim: false } };
+    setCaseHistory(current => [item, ...current]); setActiveCaseId(id); setResolutionChecks(item.resolutionChecks); setTestPlan([]); setNotes([]); setCaseDraft({ title: "", processName: "", pid: "", host: "devbox-07" }); setShowCaseRegistry(false); setCaseActivity(`Created new case ${id}.`);
+    setProcesses(current => current.some(process => process.pid === pid) ? current : [...current, { pid, name: processName, host: item.host, memory: "collecting…" }]); setActiveProcessPid(pid); toast.success(`Created case ${id}.`);
+  };
+  const deleteCase = (caseId: string) => {
+    if (caseHistory.length === 1) { toast.error("Keep at least one case in local history."); return; }
+    const next = caseHistory.filter(item => item.id !== caseId); setCaseHistory(next); if (activeCaseId === caseId) selectCase(next[0].id); toast.success("Case removed from local history.");
+  };
   const exportCase = () => {
     const markdown = `# MemScope Case M-0428\n\n## Assertion\nRequest-context allocations are remaining reachable beyond request completion.\n\n## Primary evidence\n- E-03: request_ctx allocations persist — 62.4 MiB / 19,438 allocations\n- Current confidence: 0.87\n\n## Test plan\n${testPlan.length ? testPlan.map(test => `- [${test.done ? "x" : " "}] ${test.task} — ${test.expected}`).join("\n") : "- No test added"}\n\n## Analyst notes\n${notes.length ? notes.map(note => `- ${note}`).join("\n") : "- No analyst notes"}\n`;
     const url = URL.createObjectURL(new Blob([markdown], { type: "text/markdown" }));
@@ -120,6 +162,9 @@ export default function Home() {
     if (action.includes("sample stacks")) openStacks();
     if (action.includes("Add analyst note")) { setShowNoteComposer(true); setCaseActivity("Opened analyst-note composer."); }
   };
+  useEffect(() => {
+    setCaseHistory(current => current.map(item => item.id === activeCaseId ? { ...item, notes, testPlan, resolutionChecks } : item));
+  }, [activeCaseId, notes, testPlan, resolutionChecks]);
 
   return <div onClickCapture={handleCaseAction} className="paper-case min-h-screen bg-[#0b1114] text-[#e7eeea]">
     <div className="flex min-h-screen">
@@ -128,6 +173,7 @@ export default function Home() {
         <div className="p-4"><div className="mb-2 px-3 mono text-[0.6rem] tracking-[.14em] text-[#67766f]">INVESTIGATION</div><nav className="space-y-1"><button className="nav-item active flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm"><FileSearch className="h-4 w-4" />Case file</button><button onClick={() => toast.info("Evidence is shown in chronological order below.")} className="nav-item flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm text-[#899892]"><Waypoints className="h-4 w-4" />Evidence stream</button><button onClick={() => toast.info("A comparison capture can be opened once the fix candidate is deployed.")} className="nav-item flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm text-[#899892]"><GitBranch className="h-4 w-4" />Compare fixes</button></nav></div>
         <div className="mx-4 mt-2 instrument-panel rounded-lg p-4"><div className="panel-content"><SectionLabel>Case status</SectionLabel><div className="mt-4 flex items-center gap-3"><div className="relative grid h-12 w-12 place-items-center rounded-full border border-[#ff776f]/45 bg-[#ff776f]/[.07]"><span className="mono text-xs text-[#ffb4ae]">04</span><span className="absolute -bottom-1 h-2 w-2 rounded-full bg-[#ff776f] ring-4 ring-[#111a1d]" /></div><div><p className="text-sm font-semibold text-[#f4e4e2]">Leak suspected</p><p className="mt-0.5 mono text-[.58rem] text-[#8c9a94]">CASE M-0428</p></div></div><div className="mt-4 h-1 overflow-hidden bg-[#243135]"><div className="h-full bg-gradient-to-r from-[#f5b65e] to-[#ff776f]" style={{ width: `${caseProgress}%` }} /></div><div className="mt-2 flex justify-between mono text-[.55rem] text-[#7b8a83]"><span>confidence</span><span className="text-[#f1c2bc]">0.87</span></div></div></div>
         <div className="mt-5 px-4"><SectionLabel>Case file</SectionLabel><div className="mt-3 space-y-1">{[["Scope", "api-worker / pid 18422", TerminalSquare],["Opened", "14:00:02 / 5s cadence", Clock3],["Primary signal", "resident heap growth", Activity],["Owner", "runtime diagnostics", UserRound]].map(([label, value, Icon]) => { const Symbol = Icon as typeof Activity; return <div key={label as string} className="flex items-center gap-3 rounded-md px-3 py-2.5"><Symbol className="h-3.5 w-3.5 text-[#82928b]" /><span><span className="block text-[.68rem] text-[#cdd8d2]">{label as string}</span><span className="mono block text-[.55rem] text-[#74837d]">{value as string}</span></span></div>; })}</div></div>
+        <div className="mx-4 mt-5"><SectionLabel right={<button onClick={() => setShowCaseRegistry(true)} aria-label="Create new case" className="control-button rounded border border-white/[.16] p-1"><Plus className="h-3 w-3" /></button>}>Case history</SectionLabel><div className="mt-3 space-y-1">{caseHistory.map(item => <div key={item.id} className={`flex items-center gap-2 rounded border px-2.5 py-2 ${item.id === activeCaseId ? "border-white/[.55] bg-white/[.07]" : "border-transparent"}`}><button onClick={() => selectCase(item.id)} className="min-w-0 flex-1 text-left"><span className="mono block text-[.54rem] text-[#75847d]">{item.id} · {item.pid}</span><span className="block truncate text-xs font-medium text-[#dce7df]">{item.title}</span></button><button onClick={() => deleteCase(item.id)} aria-label={`Delete ${item.title}`} className="control-button rounded border border-white/[.13] p-1 text-[#8a9992] hover:text-[#e3ebe5]"><X className="h-3 w-3" /></button></div>)}</div><p className="mt-2 mono text-[.5rem] leading-relaxed text-[#7b8a84]">Stored locally in this browser:<br />{CASE_STORAGE_KEY}</p></div>
         <div className="mx-4 mt-5"><SectionLabel right={<button onClick={() => setShowProcessRegistry(true)} aria-label="Register Linux process" className="control-button rounded border border-white/[.16] p-1"><Plus className="h-3 w-3" /></button>}>Process targets</SectionLabel><div className="mt-3 space-y-1">{processes.map(process => <div key={process.pid} className={`flex items-center gap-2 rounded border px-2.5 py-2 ${process.pid === activeProcessPid ? "border-white/[.55] bg-white/[.07]" : "border-transparent"}`}><button onClick={() => setActiveProcessPid(process.pid)} className="min-w-0 flex-1 text-left"><span className="block truncate text-xs font-medium text-[#dce7df]">{process.name}</span><span className="mono block text-[.54rem] text-[#74837d]">pid {process.pid} · {process.memory}</span></button><button onClick={() => removeProcess(process.pid)} aria-label={`Remove ${process.name}`} className="control-button rounded border border-white/[.13] p-1 text-[#8a9992] hover:text-[#e3ebe5]"><X className="h-3 w-3" /></button></div>)}</div></div>
         <div className="mt-auto border-t border-white/[.09] p-4"><button onClick={() => toast.info("Collector remains connected to mock procfs data for this prototype.")} className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left mono text-[.6rem] text-[#84938d]"><span className="status-live h-1.5 w-1.5 rounded-full bg-[#c6ff4a]" />collector / linked</button></div>
       </aside>
@@ -156,6 +202,7 @@ export default function Home() {
           {showNoteComposer && <div className="fixed inset-0 z-50 grid place-items-center bg-black/25 p-4" role="dialog" aria-modal="true" aria-label="Add analyst note"><div className="instrument-panel w-full max-w-xl rounded-lg p-5"><div className="panel-content"><div className="flex items-center justify-between gap-4"><SectionLabel>New analyst note</SectionLabel><button onClick={() => setShowNoteComposer(false)} className="control-button rounded border border-white/[.18] p-1.5"><X className="h-4 w-4" /></button></div><p className="mt-3 text-xs text-[#84938d]">This note is stored locally in the active browser session and will be included in case export.</p><textarea autoFocus value={noteDraft} onChange={event => setNoteDraft(event.target.value)} placeholder="Record an observation, decision, or next question…" className="mt-4 min-h-32 w-full resize-y rounded border border-white/[.20] bg-black/[.04] p-3 text-sm text-[#e2ebe4] outline-none placeholder:text-[#889791] focus:border-white/[.65]" /><div className="mt-4 flex justify-end gap-2"><button onClick={() => setShowNoteComposer(false)} className="control-button rounded border border-white/[.16] px-3 py-2 mono text-[.6rem]">Cancel</button><button onClick={() => { const note = noteDraft.trim(); if (!note) { toast.error("Write a note before saving."); return; } setNotes(current => [...current, note]); setNoteDraft(""); setShowNoteComposer(false); toast.success("Analyst note added to the local case log."); }} className="control-button rounded border border-white/[.40] bg-white/[.06] px-3 py-2 mono text-[.6rem]">Save note</button></div></div></div></div>}
           {showProcessRegistry && <div className="fixed inset-0 z-50 grid place-items-center bg-black/25 p-4" role="dialog" aria-modal="true" aria-label="Register Linux process"><div className="instrument-panel w-full max-w-lg rounded-lg p-5"><div className="panel-content"><div className="flex items-center justify-between gap-4"><SectionLabel>Register Linux process</SectionLabel><button onClick={() => setShowProcessRegistry(false)} className="control-button rounded border border-white/[.18] p-1.5"><X className="h-4 w-4" /></button></div><p className="mt-3 text-xs text-[#84938d]">Register a local mock collection target. The selected process becomes the active case scope.</p><div className="mt-4 grid gap-3 sm:grid-cols-2"><label className="mono text-[.58rem] text-[#75847d]">PROCESS NAME<input value={processDraft.name} onChange={event => setProcessDraft(current => ({ ...current, name: event.target.value }))} placeholder="api-worker" className="mt-1.5 w-full rounded border border-white/[.20] bg-black/[.04] px-3 py-2 text-sm text-[#e2ebe4] outline-none focus:border-white/[.65]" /></label><label className="mono text-[.58rem] text-[#75847d]">PID<input value={processDraft.pid} onChange={event => setProcessDraft(current => ({ ...current, pid: event.target.value.replace(/\D/g, "") }))} placeholder="18422" inputMode="numeric" className="mt-1.5 w-full rounded border border-white/[.20] bg-black/[.04] px-3 py-2 text-sm text-[#e2ebe4] outline-none focus:border-white/[.65]" /></label></div><label className="mono mt-3 block text-[.58rem] text-[#75847d]">HOST<input value={processDraft.host} onChange={event => setProcessDraft(current => ({ ...current, host: event.target.value }))} className="mt-1.5 w-full rounded border border-white/[.20] bg-black/[.04] px-3 py-2 text-sm text-[#e2ebe4] outline-none focus:border-white/[.65]" /></label><div className="mt-5 flex justify-end gap-2"><button onClick={() => setShowProcessRegistry(false)} className="control-button rounded border border-white/[.16] px-3 py-2 mono text-[.6rem]">Cancel</button><button onClick={addProcess} className="control-button rounded border border-white/[.40] bg-white/[.06] px-3 py-2 mono text-[.6rem]">Register target</button></div></div></div></div>}
           <section className="instrument-panel mt-3 rounded-lg p-5"><div className="panel-content"><div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"><div><SectionLabel>Resolution controls</SectionLabel><p className="mt-2 text-xs text-[#84938d]">Confirm each independent condition as its evidence is verified. {completedCriteria}/3 conditions confirmed.</p></div><div className="rounded border border-white/[.18] px-3 py-2 mono text-[.6rem] text-[#7a8982]">ACTIVE SCOPE · {activeProcess?.name ?? "none"} / pid {activeProcess?.pid ?? "—"}</div></div><div className="mt-4 grid gap-3 md:grid-cols-3">{[["isolation", "Isolation test executed", "The request_ctx reuse path has been disabled for the controlled window."],["slope", "RSS slope below 0.4 MiB/min", "Observed growth fell below the case threshold after the test."],["reclaim", "No retained pages after collection", "Private-dirty heap pages were reclaimed after collection."]].map(([id,label,detail]) => { const criterion = id as keyof typeof resolutionChecks; const checked = resolutionChecks[criterion]; return <button key={id} onClick={() => toggleResolution(criterion)} className={`control-button rounded border p-3 text-left ${checked ? "border-white/[.62] bg-white/[.10]" : "border-white/[.16] bg-black/[.02]"}`}><span className="flex items-center gap-2"><span className={`grid h-4 w-4 place-items-center rounded-full border ${checked ? "border-black bg-black text-white" : "border-white/[.35] text-transparent"}`}><Check className="h-2.5 w-2.5" /></span><span className="mono text-[.58rem] text-[#75847d]">click to {checked ? "unconfirm" : "confirm"}</span></span><span className={`mt-2 block text-xs font-medium ${checked ? "line-through text-[#82918b]" : "text-[#dce7df]"}`}>{label}</span><span className="mt-1 block text-[.67rem] leading-relaxed text-[#85948e]">{detail}</span></button>; })}</div></div></section>
+          {showCaseRegistry && <div className="fixed inset-0 z-50 grid place-items-center bg-black/25 p-4" role="dialog" aria-modal="true" aria-label="Create investigation case"><div className="instrument-panel w-full max-w-xl rounded-lg p-5"><div className="panel-content"><div className="flex items-center justify-between gap-4"><SectionLabel>Create investigation case</SectionLabel><button onClick={() => setShowCaseRegistry(false)} className="control-button rounded border border-white/[.18] p-1.5"><X className="h-4 w-4" /></button></div><p className="mt-3 text-xs leading-relaxed text-[#84938d]">This prototype stores each case in your current browser’s local storage. It is not sent to a server. Storage key: <span className="mono text-[#dce7df]">{CASE_STORAGE_KEY}</span>.</p><div className="mt-4 grid gap-3 sm:grid-cols-2"><label className="mono text-[.58rem] text-[#75847d] sm:col-span-2">CASE TITLE<input value={caseDraft.title} onChange={event => setCaseDraft(current => ({ ...current, title: event.target.value }))} placeholder="Leak in request context cache" className="mt-1.5 w-full rounded border border-white/[.20] bg-black/[.04] px-3 py-2 text-sm text-[#e2ebe4] outline-none focus:border-white/[.65]" /></label><label className="mono text-[.58rem] text-[#75847d]">PROCESS NAME<input value={caseDraft.processName} onChange={event => setCaseDraft(current => ({ ...current, processName: event.target.value }))} placeholder="api-worker" className="mt-1.5 w-full rounded border border-white/[.20] bg-black/[.04] px-3 py-2 text-sm text-[#e2ebe4] outline-none focus:border-white/[.65]" /></label><label className="mono text-[.58rem] text-[#75847d]">PID<input value={caseDraft.pid} onChange={event => setCaseDraft(current => ({ ...current, pid: event.target.value.replace(/\D/g, "") }))} placeholder="18422" inputMode="numeric" className="mt-1.5 w-full rounded border border-white/[.20] bg-black/[.04] px-3 py-2 text-sm text-[#e2ebe4] outline-none focus:border-white/[.65]" /></label></div><label className="mono mt-3 block text-[.58rem] text-[#75847d]">HOST<input value={caseDraft.host} onChange={event => setCaseDraft(current => ({ ...current, host: event.target.value }))} className="mt-1.5 w-full rounded border border-white/[.20] bg-black/[.04] px-3 py-2 text-sm text-[#e2ebe4] outline-none focus:border-white/[.65]" /></label><div className="mt-5 flex justify-end gap-2"><button onClick={() => setShowCaseRegistry(false)} className="control-button rounded border border-white/[.16] px-3 py-2 mono text-[.6rem]">Cancel</button><button onClick={createCase} className="control-button rounded border border-white/[.40] bg-white/[.06] px-3 py-2 mono text-[.6rem]">Create and open case</button></div></div></div></div>}
           <footer className="flex flex-col gap-2 py-6 mono text-[.58rem] text-[#65756e] sm:flex-row sm:items-center sm:justify-between"><span>MEMSCOPE / LEAK DETECTIVE TEMPLATE · synthetic case evidence</span><span className="flex items-center gap-2"><Clock3 className="h-3 w-3" />last collected 14:55:07.003 · 5s cadence</span></footer>
         </div>
       </main>

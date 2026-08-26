@@ -92,3 +92,7 @@ The cursive must read as clear editorial handwriting rather than a signature tex
 ### Functional investigation controls
 
 Resolution criteria are independent checkable assertions, not static decoration. A case automatically advances from open to testing to resolved based on the checks that the investigator confirms. The local process registry treats each manually registered PID as a selectable mock collection target. Adding, selecting, or removing a target must visibly change the active case scope while preserving the existing synthetic evidence workspace.
+
+### Persistent case registry
+
+Cases are prototype records stored in the user’s own browser via `localStorage`, never uploaded to a server. The Case History rail is a true working registry: it lets an investigator create, select, test, and delete cases; each case carries its own criteria, local test-plan state, and analyst notes. The storage key is stated in the interface so the temporary, browser-local nature of this prototype is unambiguous.

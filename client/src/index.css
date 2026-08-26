@@ -219,9 +219,14 @@
     letter-spacing: .005em;
     line-height: .94;
   }
-  .paper-case h1 { font-family: "Allura", cursive; font-weight: 400; letter-spacing: .015em; line-height: .94; font-size: clamp(3.15rem, 4.6vw, 4.65rem); }
+  .paper-case h1 { font-family: "Allura", cursive; font-weight: 400; letter-spacing: .015em; line-height: .94; font-size: clamp(2.8rem, 4vw, 4.1rem); }
   .paper-case h1 span { white-space: nowrap; }
   .paper-case .dossier-emphasis { border-bottom: 1px solid currentColor; padding-bottom: .035em; }
+  .paper-case .instrument-panel:has(svg[aria-label="Memory leak evidence timeline"]) {
+    border-color: rgba(0,0,0,.44);
+    box-shadow: inset 3px 0 0 #000, 0 12px 26px rgba(0,0,0,.08);
+  }
+  .paper-case .instrument-panel:has(svg[aria-label="Memory leak evidence timeline"]) .observation-tag { color: #000; font-weight: 600; }
   .paper-case h2.script-heading { font-size: 2.1rem; }
   .paper-case .evidence-item.active { box-shadow: inset 3px 0 0 currentColor; }
   .paper-case .control-button:hover { background-color: rgba(255,255,255,.18); }
