@@ -20,3 +20,11 @@
 - [x] Add the thin cursive treatment to selected case narrative and evidence headings.
 - [x] Verify readability and visual hierarchy in the light template.
 - [ ] Save and deliver the white-paper project checkpoint.
+
+## Functional Case Controls Revision
+
+- [x] Define usable in-browser workflows for export, testing, stacks, and notes.
+- [x] Implement downloadable case export and editable test-plan actions.
+- [x] Implement sampled-stack display and analyst note creation.
+- [x] Verify every previously placeholder control has a visible functional outcome.
+- [ ] Save and deliver the functional controls checkpoint.
