@@ -64,5 +64,5 @@
 ## GitHub Upload and Deployment Revision
 
 - [x] Confirm the target GitHub account and repository destination: SHREYANBHUNIA/memscope (private).
-- [ ] Create or prepare a deployment-ready repository and push the project source.
-- [ ] Verify the remote repository and document the deployment handoff.
+- [x] Create or prepare a deployment-ready repository and push the project source.
+- [x] Verify the remote repository and document the deployment handoff.
