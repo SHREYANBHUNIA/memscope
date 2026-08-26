@@ -66,3 +66,9 @@
 - [x] Confirm the target GitHub account and repository destination: SHREYANBHUNIA/memscope (private).
 - [x] Create or prepare a deployment-ready repository and push the project source.
 - [x] Verify the remote repository and document the deployment handoff.
+
+## Git Author Attribution Revision
+
+- [x] Confirm the current authored commit scope on the GitHub branch: all 12 published commits.
+- [ ] Rewrite the project commit attribution with the provided author identity.
+- [ ] Verify the replacement author appears on the GitHub repository history.
