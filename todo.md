@@ -5,3 +5,10 @@
 - [x] Add interactive mock leak evidence selection and resolution states.
 - [x] Verify the revised desktop and mobile visual hierarchy.
 - [ ] Save and deliver the revised project checkpoint.
+
+## Monochrome Template Revision
+
+- [x] Define the black-and-white visual language and semantic grayscale states.
+- [x] Replace colored dashboard surfaces, charts, evidence markers, and controls with monochrome styling.
+- [x] Verify high-contrast accessibility and visual hierarchy across the case-file layout.
+- [ ] Save and deliver the monochrome project checkpoint.

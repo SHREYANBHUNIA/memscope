@@ -76,3 +76,9 @@ The mark is a cropped memory-map bracket containing three stacked trace segments
 ### Leak Detective revision
 
 The active dashboard direction is now **Leak Detective**. The workbench becomes a digital case file: the primary hierarchy is hypothesis, confidence, evidence, and the next falsifiable test. The chart is no longer the destination; it is a piece of evidence connected to timed observations. Soft dossier panels, numbered evidence markers, a compact investigation timeline, and a visible case status turn the telemetry into a disciplined debugging narrative. The existing graphite, lime, amber, and coral instrumentation palette remains, but coral is reserved for the suspected retained allocation path and confidence risk.
+
+### Monochrome template revision
+
+The active visual language is now **Monochrome Casework**. The interface relies on matte black, paper white, graphite, smoke gray, and one intentional near-white emphasis state. Semantic priority is conveyed by contrast, typography, border density, fill patterns, and line weight—not hue. Suspected evidence uses white outlines and solid white markers; secondary or unresolved evidence uses dashed graphite traces; resolution states invert into white blocks with black text. The result should feel like a forensic printout reimagined as a responsive digital investigation surface.
+
+The custom MemScope wordmark uses a linked three-block `M` construction to echo segmented memory addresses. Primary evidence must use the strongest white perimeter, solid connector, and marker treatment; all less certain evidence stays visibly lighter or dashed. Calibration brackets and filed-boundary details are repeated across the interface to strengthen the dossier motif.

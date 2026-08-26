@@ -1,6 +1,6 @@
 /**
- * Leak Detective style: a restrained digital case file with dossier panels,
- * evidence threads, numbered markers, and high-contrast investigation states.
+ * Monochrome Casework style: a black-and-white digital case file with dossier panels,
+ * evidence threads, numbered markers, and hierarchy created only through contrast.
  */
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -36,25 +36,25 @@
 
 :root {
   --radius: 0.75rem;
-  --background: #0b1114;
-  --foreground: #e7eeea;
-  --card: #10191d;
-  --card-foreground: #e7eeea;
-  --popover: #10191d;
-  --popover-foreground: #e7eeea;
-  --primary: #c6ff4a;
-  --primary-foreground: #0b1114;
-  --secondary: #182428;
-  --secondary-foreground: #d8e0dc;
-  --muted: #132025;
-  --muted-foreground: #84928e;
-  --accent: #182428;
-  --accent-foreground: #edf4ed;
-  --destructive: #ff776f;
-  --destructive-foreground: #221011;
-  --border: rgba(198, 218, 210, 0.12);
-  --input: rgba(198, 218, 210, 0.16);
-  --ring: #c6ff4a;
+  --background: #000000;
+  --foreground: #f7f7f7;
+  --card: #0b0b0b;
+  --card-foreground: #f7f7f7;
+  --popover: #0b0b0b;
+  --popover-foreground: #f7f7f7;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #e1e1e1;
+  --muted: #141414;
+  --muted-foreground: #969696;
+  --accent: #1a1a1a;
+  --accent-foreground: #f7f7f7;
+  --destructive: #e8e8e8;
+  --destructive-foreground: #000000;
+  --border: rgba(255, 255, 255, 0.17);
+  --input: rgba(255, 255, 255, 0.18);
+  --ring: #ffffff;
 }
 
 @layer base {
@@ -63,9 +63,9 @@
   body {
     min-width: 320px;
     background:
-      radial-gradient(circle at 82% -8%, rgba(112, 89, 61, .11), transparent 32rem),
-      radial-gradient(circle at 17% 22%, rgba(84, 119, 95, .10), transparent 26rem),
-      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px),
+      radial-gradient(circle at 82% -8%, rgba(255, 255, 255, .055), transparent 32rem),
+      radial-gradient(circle at 17% 22%, rgba(255, 255, 255, .035), transparent 26rem),
+      linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px),
       var(--background);
     background-size: auto, auto, 28px 28px, auto;
     color: var(--foreground);
@@ -84,6 +84,18 @@
     border: 1px solid rgba(205, 224, 214, 0.13);
     background: linear-gradient(145deg, rgba(23, 35, 40, 0.92), rgba(13, 22, 26, 0.93));
     box-shadow: 0 18px 38px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.025);
+  }
+  .instrument-panel::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    width: 18px;
+    height: 10px;
+    border-left: 1px solid rgba(255,255,255,.28);
+    border-top: 1px solid rgba(255,255,255,.28);
+    opacity: .7;
   }
   .instrument-panel::after {
     content: "";
@@ -122,7 +134,68 @@
   .evidence-item.active { border-color: rgba(198,255,74,.55); background: linear-gradient(90deg, rgba(198,255,74,.11), rgba(198,255,74,.025)); }
   .status-live { animation: livePulse 2s ease-in-out infinite; }
   .evidence-beacon { animation: beaconPulse 2.1s ease-in-out infinite; }
+  .brand-wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: .44rem;
+    color: #fff;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .15em;
+    line-height: 1;
+  }
+  .brand-wordmark .memory-m {
+    position: relative;
+    display: inline-grid;
+    grid-template-columns: repeat(3, 3px);
+    gap: 2px;
+    width: 13px;
+    height: 12px;
+    padding-top: 2px;
+  }
+  .brand-wordmark .memory-m i { display: block; height: 3px; background: currentColor; }
+  .brand-wordmark .memory-m i:nth-child(1) { grid-column: 1 / 2; grid-row: 1 / 4; }
+  .brand-wordmark .memory-m i:nth-child(2) { grid-column: 2 / 3; grid-row: 2 / 4; }
+  .brand-wordmark .memory-m i:nth-child(3) { grid-column: 3 / 4; grid-row: 1 / 4; }
+  .brand-wordmark .memory-m::after { content: ""; position: absolute; top: 0; left: 3px; width: 7px; height: 3px; border-top: 1px solid currentColor; }
+  .case-evidence-thread { position: relative; }
+  .case-evidence-thread::before { content: ""; position: absolute; left: 20px; top: 16px; bottom: 16px; border-left: 1px dashed rgba(255,255,255,.2); pointer-events: none; }
+  .primary-evidence-ring { border-color: #fff !important; background-color: rgba(255,255,255,.12) !important; box-shadow: 0 0 0 1px rgba(255,255,255,.26), 0 0 0 5px rgba(255,255,255,.035); }
   @keyframes livePulse { 50% { box-shadow: 0 0 0 5px rgba(198,255,74,0.04); opacity: .55; } }
   @keyframes beaconPulse { 50% { filter: drop-shadow(0 0 6px rgba(255,119,111,.65)); } }
   @media (prefers-reduced-motion: reduce) { .status-live, .evidence-beacon { animation: none; } .nav-item, .control-button, .evidence-item { transition: none; } }
+
+  /* The existing evidence components retain their structural color names; this
+     treatment maps the whole case file to intentional grayscale at render time. */
+  .monochrome-case {
+    color-scheme: dark;
+    background: #000 !important;
+    filter: grayscale(1) contrast(1.22) brightness(.96);
+  }
+  .monochrome-case .instrument-panel {
+    border-color: rgba(255,255,255,.18);
+    background: linear-gradient(145deg, #111 0%, #070707 100%);
+    box-shadow: 0 18px 38px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .monochrome-case .instrument-panel::after {
+    opacity: .38;
+    background-image: linear-gradient(rgba(255,255,255,.032) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.032) 1px, transparent 1px);
+  }
+  .monochrome-case .nav-item.active {
+    color: #fff;
+    background: linear-gradient(90deg, rgba(255,255,255,.15), rgba(255,255,255,.025));
+    box-shadow: inset 2px 0 #fff;
+  }
+  .monochrome-case .control-button:hover {
+    border-color: rgba(255,255,255,.75);
+    background-color: rgba(255,255,255,.10);
+  }
+  .monochrome-case .evidence-item.active {
+    border-color: rgba(255,255,255,.7);
+    background: linear-gradient(90deg, rgba(255,255,255,.13), rgba(255,255,255,.025));
+  }
+  .monochrome-case .evidence-beacon { filter: grayscale(1) brightness(2.2); }
+  .monochrome-case .primary-evidence-ring { color: #fff !important; border-color: #fff !important; background-color: rgba(255,255,255,.10) !important; }
+  .monochrome-case .instrument-panel::before { border-color: rgba(255,255,255,.42); }
 }
